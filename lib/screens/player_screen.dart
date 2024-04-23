@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player_flutter_app/widgets/custom_app_bar.dart';
 
 // Widget referente a la pantalla principal de la aplicación
 class PlayerScreen extends StatelessWidget {
@@ -7,8 +8,10 @@ class PlayerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Text('Player Screen'),
+      body: Column(
+        children: [
+          CustomAppBar(),
+        ],
       ),
     );
   }
