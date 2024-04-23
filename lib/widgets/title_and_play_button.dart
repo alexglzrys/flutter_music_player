@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Widget contenedor encargado de mostrar el título de la canción, nombre del artista y el botón de reproducit
 class TitleAndPlayButton extends StatelessWidget {
@@ -49,10 +48,44 @@ class _TitleAndArtist extends StatelessWidget {
 }
 
 // Widget privado encargado de mostrar el botón de reproducir
-class _PlayButton extends StatelessWidget {
+// ? Se transforma a un widget con estado ya que se animará el botón de reproducir, el cuál mostrará un icono diferente dependiendo si el usuario reproduce o pausa la pista musicol
+class _PlayButton extends StatefulWidget {
   const _PlayButton({
     super.key,
   });
+
+  @override
+  State<_PlayButton> createState() => _PlayButtonState();
+}
+
+// ? SingleTickerProviderStateMixin es una clase de mixin en Flutter que proporciona un TickerProvider para un único AnimationController.
+// Un TickerProvider es necesario cuando estás utilizando animaciones en Flutter, ya que los objetos AnimationController requieren un Ticker para funcionar.
+// * Cuando utilizas una animación con un AnimationController, necesitas proporcionar un objeto que implemente TickerProvider. Este objeto se utiliza para generar los pulsos de reloj necesarios para actualizar la animación en cada fotograma.
+class _PlayButtonState extends State<_PlayButton>
+    with SingleTickerProviderStateMixin {
+  // Propiedad de estado para saber si la pista musical se esta reproduciendo
+  bool isPlaying = false;
+  // Controlador de animación
+  late AnimationController animationController;
+
+  @override
+  void initState() {
+    // Inicializar el controlador de animación (se puede utilizar para iniciar, deterner, avanzar o retorceder una animación)
+    animationController = AnimationController(
+      // especifica el objeto que implementa TickerProvider y se utiliza para proporcionar los pulsos de reloj necesarios para la animación. (este objeto)
+      vsync: this,
+      // duración de la animación
+      duration: const Duration(milliseconds: 500),
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Eliminar cualquier controlador antes de destruir esta pantalla del árbol de widgets
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +94,25 @@ class _PlayButton extends StatelessWidget {
       elevation: 0,
       highlightElevation: 0,
       backgroundColor: const Color(0xfff8cb51),
-      onPressed: () {},
-      child: const Icon(
-        FontAwesomeIcons.play,
-        size: 20,
+      onPressed: () {
+        // Si se esta reproduciendo, regresar el icono a su estado anterior, caso contrario avanzar al siguiente icono
+        // ? (la transición entre uno y otro es gestionada por el controlador de aniumación)
+        if (isPlaying) {
+          animationController.reverse();
+          isPlaying = false;
+        } else {
+          animationController.forward();
+          isPlaying = true;
+        }
+        setState(() {});
+      },
+      // AnimatedIcon es un widget utilizado para mostrar un icono animado.
+      child: AnimatedIcon(
+        // El icono animado a mostrar en el botón
+        // ? Son iconos especiales preparados para la animación
+        icon: AnimatedIcons.play_pause,
+        // El controlador de la animación
+        progress: animationController,
       ),
     );
   }
