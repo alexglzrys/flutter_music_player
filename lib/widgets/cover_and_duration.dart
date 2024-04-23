@@ -9,12 +9,14 @@ class CoverAndDuration extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 60),
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      child: const Row(
         children: [
           // Portada
-          const _Cover(),
+          _Cover(),
+          Spacer(),
           // Duración
-          Container(),
+          _Duration(),
+          SizedBox(width: 30)
         ],
       ),
     );
@@ -78,6 +80,65 @@ class _Cover extends StatelessWidget {
         ],
         begin: Alignment.topLeft,
       ),
+    );
+  }
+}
+
+// Widget privado para representar la duración y progreso de la pista actual
+class _Duration extends StatelessWidget {
+  const _Duration({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Variable local para almacenar el color del texto referente a la duración
+    final colorTextDuration = Colors.white.withOpacity(0.4);
+    return Column(
+      children: [
+        // Duración total de la pista musical
+        Text(
+          '03:55',
+          style: TextStyle(color: colorTextDuration),
+        ),
+        const SizedBox(height: 10),
+        // Barra de progreso
+        const _Progress(),
+        const SizedBox(height: 10),
+        // Tiempo inicial
+        Text(
+          '00:00',
+          style: TextStyle(color: colorTextDuration),
+        ),
+      ],
+    );
+  }
+}
+
+// Widget encargado de dibujar la barra de progreso de la pista musical
+class _Progress extends StatelessWidget {
+  const _Progress({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        // Barra de fondo
+        Container(
+          width: 3,
+          height: 200,
+          color: Colors.white.withOpacity(0.1),
+        ),
+        // Barra que indica el progreso actual
+        Container(
+          width: 3,
+          height: 75,
+          color: Colors.white.withOpacity(0.8),
+        ),
+      ],
     );
   }
 }
