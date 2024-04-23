@@ -9,6 +9,7 @@ class TitleAndPlayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.only(bottom: 20),
       child: const Row(
         children: [
           // Titulo de canción y Nombre del artista
