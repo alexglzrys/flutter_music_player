@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_player_flutter_app/providers/music_player_provider.dart';
+import 'package:provider/provider.dart';
 
 // Widget contenedor encargado de mostrar el título de la canción, nombre del artista y el botón de reproducit
 class TitleAndPlayButton extends StatelessWidget {
@@ -89,6 +91,9 @@ class _PlayButtonState extends State<_PlayButton>
 
   @override
   Widget build(BuildContext context) {
+    // Requerir la instancia de MusicPlayerProvider
+    final musicPlayerProvider = Provider.of<MusicPlayerProvider>(context);
+
     return FloatingActionButton(
       // Controlar elevación visual del botón flotante y su sombra (cuando es presionado)
       elevation: 0,
@@ -100,9 +105,15 @@ class _PlayButtonState extends State<_PlayButton>
         if (isPlaying) {
           animationController.reverse();
           isPlaying = false;
+          // ! Indicar a la animación de la portada del disco (SpinPerfect) que debe parar
+          // Esto es posible debido a que MusicPlayerProvider tiene la referencia al controlador de animación del SpinPerfect
+          musicPlayerProvider.controller.stop();
         } else {
           animationController.forward();
           isPlaying = true;
+          // ! Indicar a la animación de la portada del disco (SpinPerfect) que debe ejecutar nuevamente la animación
+          // Esto es posible debido a que MusicPlayerProvider tiene la referencia al controlador de animación del SpinPerfect
+          musicPlayerProvider.controller.repeat();
         }
         setState(() {});
       },

@@ -1,4 +1,7 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:music_player_flutter_app/providers/music_player_provider.dart';
+import 'package:provider/provider.dart';
 
 // Widget que representa la portada y duración de la pista musical
 class CoverAndDuration extends StatelessWidget {
@@ -44,9 +47,7 @@ class _Cover extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               // Portada de disco
-              const Image(
-                image: AssetImage('assets/images/brillantes_de_la_cumbia.jpg'),
-              ),
+              const _CompactDisc(),
               // Orificios centrales del disco
               Container(
                 width: 24,
@@ -139,6 +140,37 @@ class _Progress extends StatelessWidget {
           color: Colors.white.withOpacity(0.8),
         ),
       ],
+    );
+  }
+}
+
+// Widget privado que hace referencia al disco compacto que se usa como portada
+class _CompactDisc extends StatelessWidget {
+  const _CompactDisc({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Requerir la instancia de MusicPlayerProvider
+    final musicPlayerProvider = Provider.of<MusicPlayerProvider>(context);
+
+    // Animar de forma infinita la imagen del disco (paquete Animate_do)
+    return SpinPerfect(
+      // duración o velocidad de la animación
+      duration: const Duration(seconds: 10),
+      // animación infinitsa
+      infinite: true,
+      // esta animación se activará o pausará manualmente (dependiendo si el usuario toca el botón de reproducir)
+      manualTrigger: true,
+      // función que expone el controlador de esta animación
+      // ? se comparte la referencia del controlador de animación usado en el SpinPerfect hacia musicPlayerProvider
+      // * Al compartir esa referencia podemos manipular (activar o parar) esta animación, desde otras partes de la aplicación (botón de play o pausa)
+      controller: (animationController) =>
+          musicPlayerProvider.controller = animationController,
+      child: const Image(
+        image: AssetImage('assets/images/brillantes_de_la_cumbia.jpg'),
+      ),
     );
   }
 }
