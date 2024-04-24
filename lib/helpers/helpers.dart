@@ -45,3 +45,23 @@ List<String> getLyrics() {
     'When the waters…'
   ];
 }
+
+// Función de utilidad para colocar una mascara de dos digitos en los minutos y segundos al tiempo o duración pasado como parámetro
+String maskDuration(Duration duration) {
+  // Función inerna que determinar si el número o digito actual se debe prefijar con un cero al inicio
+  // Siempre retorna una cadena con dos digitos
+  String twoDigits(int number) {
+    if (number >= 10) return '$number';
+    return '0$number';
+  }
+
+  // Calcular los minutoy los convierte a una cadena de dos digitos
+  // ? duration.inMinutes.remainder(60) obtiene los minutos restantes después de dividir por 60, lo que asegura que los minutos estén en el rango de 0 a 59.
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  // Calcular los segundos los convierte a una cadena de dos digitos
+  // ? duration.inSeconds.remainder(60) obtiene los segundos restantes después de dividir por 60, lo que asegura que los segundos estén en el rango de 0 a 59.
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+
+  // Retornar el timpo o duración formateada con los minutos y segundos concatenados separados por : puntos
+  return '$twoDigitMinutes:$twoDigitSeconds';
+}
