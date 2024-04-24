@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:music_player_flutter_app/providers/music_player_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -67,8 +68,12 @@ class _PlayButtonState extends State<_PlayButton>
     with SingleTickerProviderStateMixin {
   // Propiedad de estado para saber si la pista musical se esta reproduciendo
   bool isPlaying = false;
+  // Bandera para saber si la pista de audio seleccionada aun no se reproducido por primera vez
+  bool isNewTrack = true;
   // Controlador de animación
   late AnimationController animationController;
+  // Instancia del reproductor de audio
+  final AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   void initState() {
@@ -87,6 +92,25 @@ class _PlayButtonState extends State<_PlayButton>
     // Eliminar cualquier controlador antes de destruir esta pantalla del árbol de widgets
     animationController.dispose();
     super.dispose();
+  }
+
+  // Método que establece la pista de audio a reproducir y obtiene metainformación de la misma
+  void open() {
+    // Setear pista de audio y reproducirla
+    final musicPlayerProvider =
+        Provider.of<MusicPlayerProvider>(context, listen: false);
+    assetsAudioPlayer.open(Audio('assets/audio/es_el_amor.mp3'));
+
+    // Obtener la duración total
+    assetsAudioPlayer.current.listen((Playing? playingAudio) {
+      musicPlayerProvider.songTotalDuration =
+          playingAudio?.audio.duration ?? const Duration(seconds: 0);
+    });
+
+    // Obtener la posición actual de reproducción
+    assetsAudioPlayer.currentPosition.listen((duration) {
+      musicPlayerProvider.songCurrentDuration = duration;
+    });
   }
 
   @override
@@ -115,6 +139,16 @@ class _PlayButtonState extends State<_PlayButton>
           // Esto es posible debido a que MusicPlayerProvider tiene la referencia al controlador de animación del SpinPerfect
           musicPlayerProvider.controller.repeat();
         }
+
+        // Si la pista aun no se ha reproducido, setaala y reproduce
+        if (isNewTrack) {
+          open();
+          isNewTrack = false;
+        } else {
+          // Pausa o reproduce la pista seteada
+          assetsAudioPlayer.playOrPause();
+        }
+
         setState(() {});
       },
       // AnimatedIcon es un widget utilizado para mostrar un icono animado.

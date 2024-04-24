@@ -93,13 +93,15 @@ class _Duration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Requerir la instancia de mi Provider
+    final musicPlayerProvider = Provider.of<MusicPlayerProvider>(context);
     // Variable local para almacenar el color del texto referente a la duración
     final colorTextDuration = Colors.white.withOpacity(0.4);
     return Column(
       children: [
         // Duración total de la pista musical
         Text(
-          '03:55',
+          musicPlayerProvider.songTotalDurationFormated,
           style: TextStyle(color: colorTextDuration),
         ),
         const SizedBox(height: 10),
@@ -108,7 +110,7 @@ class _Duration extends StatelessWidget {
         const SizedBox(height: 10),
         // Tiempo inicial
         Text(
-          '00:00',
+          musicPlayerProvider.songCurrentDurationFormated,
           style: TextStyle(color: colorTextDuration),
         ),
       ],
@@ -124,6 +126,9 @@ class _Progress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Requerir la instancia de mi Provider
+    final musicPlayerProvider = Provider.of<MusicPlayerProvider>(context);
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -136,7 +141,7 @@ class _Progress extends StatelessWidget {
         // Barra que indica el progreso actual
         Container(
           width: 3,
-          height: 75,
+          height: 230 * musicPlayerProvider.percentage,
           color: Colors.white.withOpacity(0.8),
         ),
       ],
